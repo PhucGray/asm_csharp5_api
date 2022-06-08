@@ -8,10 +8,10 @@ namespace api.Interfaces
 {
     public interface IFood
     {
-        IEnumerable<FoodModel> GetAll();
-        FoodModel GetById(int id);
-        Task<dynamic> Add(IFormCollection formData);
-        FoodModel Update(FoodModel food);
-        void Delete(int id);
+        Task<IEnumerable<FoodModel>> GetAll();
+        Task<FoodModel> GetById(int id);
+        Task<FoodModel> Add(IFormCollection formData);
+        Task<FoodModel> Update(IFormCollection formData, int id);
+        Task<bool> Delete(int id);
     }
 }

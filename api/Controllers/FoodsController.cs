@@ -20,37 +20,37 @@ namespace api.Controllers
 
         // GET api/foods
         [HttpGet]
-        public IEnumerable<FoodModel> GetAll()
+        public async Task<IEnumerable<FoodModel>> GetAll()
         {
-            return _food.GetAll();
+            return await _food.GetAll();
         }
 
         // GET api/foods/3
         [HttpGet("{id}")]
-        public FoodModel GetById(int id)
+        public async Task<FoodModel> GetById(int id)
         {
-            return _food.GetById(id);
+            return await _food.GetById(id);
         }
 
         // POST api/foods
         [HttpPost]
-        public async Task<dynamic> Add(IFormCollection formData)
+        public async Task<FoodModel> Add(IFormCollection formData)
         {
             return await _food.Add(formData);
         }
 
         // PUT api/foods/3
         [HttpPut("{id}")]
-        public FoodModel Update([FromBody] FoodModel food)
+        public async Task<FoodModel> Update(IFormCollection formData, int id)
         {
-            return _food.Update(food);
+            return await _food.Update(formData, id);
         }
 
         // DELETE api/foods/4
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            _food.Delete(id);
+            return await _food.Delete(id);
         }
     }
 }

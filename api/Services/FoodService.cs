@@ -4,6 +4,7 @@ using api.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,17 +25,17 @@ namespace api.Services
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public IEnumerable<FoodModel> GetAll() 
+        public async Task<IEnumerable<FoodModel>> GetAll() 
         { 
-            return _context.Foods.ToList(); 
+            return await _context.Foods.ToListAsync(); 
         }
 
-        public FoodModel GetById(int id)
+        public async Task<FoodModel> GetById(int id)
         {
-            return _context.Foods.Find(id);
+            return await _context.Foods.FindAsync(id);
         }
 
-        public async Task<dynamic> Add(IFormCollection data)
+        public async Task<FoodModel> Add(IFormCollection data)
         {
             try
             {
@@ -61,26 +62,66 @@ namespace api.Services
             }
 
             return null;
-
-
         }
 
-        public FoodModel Update(FoodModel food)
+        public async Task<FoodModel> Update(IFormCollection data, int id)
         {
             try
             {
-                _context.Update(food);
-                _context.SaveChanges();
-            }
-            catch (Exception) { }
 
-            return food;
+                var files = data.Files;
+
+
+                if (data.TryGetValue("foodData", out var someData))
+                {
+                    string imagePath = "";
+
+                    var newFood = JsonSerializer.Deserialize<FoodModel>(someData);
+                    var food = _context.Foods.Find(id);
+
+                    
+                    food.Name = newFood.Name;
+                    food.Price = newFood.Price;
+                    food.SpecialPrice = newFood.SpecialPrice;
+                    food.Description = newFood.Description;
+                    food.Status = newFood.Status;
+                    food.IsDeleted = newFood.IsDeleted;
+
+                    if (files.Count > 0)
+                    {
+                        imagePath = await ImageHelper.Upload(files[0], _webHostEnvironment);
+                        food.Image = imagePath;
+                    }
+
+                    
+                    //_context.Foods.Update(food);
+                    await _context.SaveChangesAsync();
+
+                    return food;
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return null;
         }
 
-        public void Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            var food = _context.Foods.Find(id);
-            _context.Foods.Remove(food);
+            try
+            {
+                var food = _context.Foods.Find(id);
+                _context.Foods.Remove(food);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
