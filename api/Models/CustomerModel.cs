@@ -1,20 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
-    public enum Roles
-    {
-        Employee = 0,
-        Admin = 1,
-        SuperAdmin = 2,
-    }
-
-    [Table("User")]
-    public class UserModel
+    [Table("Customer")]
+    public class CustomerModel
     {
         [Key]
-        public int Id { get; set; } 
+        public int Id { get; set; }
 
         [Required]
         [Column(TypeName = "nvarchar(255)")]
@@ -36,13 +30,13 @@ namespace api.Models
         public string Address { get; set; }
 
         [Required]
-        [Column(TypeName = "nvarchar(20)")]
+        [Column(TypeName = "nvarchar(255)")]
         public string Phone { get; set; }
 
         [Required]
         public bool IsDeleted { get; set; } = false;
 
-        [Required]
-        public Roles Role { get; set; } = Roles.Employee;
+        //
+        public ICollection<OrderModel> Orders { get; set; }
     }
 }

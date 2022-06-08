@@ -12,7 +12,6 @@ namespace api.Models.MockData
                 FullName = "Nguyen Van A",
                 Email = "a@gmail.com",
                 Password = "000000",
-                RoleId = 0,
                 Address = "",
                 Phone = "",
                 Gender = true,

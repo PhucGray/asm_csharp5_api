@@ -59,7 +59,6 @@ namespace api.Controllers
             var claims = new[]
             {
                 new Claim("FullName", user.FullName),
-                new Claim("Role", user.RoleId.ToString()),
                 new Claim("Email", user.Email)
             };
 
