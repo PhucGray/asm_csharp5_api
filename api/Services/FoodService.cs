@@ -93,8 +93,6 @@ namespace api.Services
                         food.Image = imagePath;
                     }
 
-                    
-                    //_context.Foods.Update(food);
                     await _context.SaveChangesAsync();
 
                     return food;

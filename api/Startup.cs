@@ -56,6 +56,7 @@ namespace api
 
             // ADD INTERFACES AND SERIVCES
             services.AddTransient<IFood, FoodService>();
+            services.AddTransient<IUser, UserService>();
 
             // ADD CORS
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
