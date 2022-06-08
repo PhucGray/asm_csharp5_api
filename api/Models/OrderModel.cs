@@ -18,7 +18,6 @@ namespace api.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
         public double ToTalPrice { get; set; }
 
         public DateTime OrderDate { get; set; } = DateTime.Now;
@@ -30,7 +29,6 @@ namespace api.Models
         [Column(TypeName = "nvarchar(255)")]
         public string Note { get; set; }
 
-        [Required]
         public OrderStatus OrderStatus { get; set; } = OrderStatus.Processing;
 
         //
@@ -38,6 +36,6 @@ namespace api.Models
         public int CustomerId { get; set; }
         public CustomerModel Customer { get; set; }
 
-        ICollection<OrderDetailModel> OrderDetails { get; set; }
+        public ICollection<OrderDetailModel> OrderDetails { get; set; }
     }
 }

@@ -22,7 +22,6 @@ namespace api.Models
         [Column(TypeName = "nvarchar(255)")]
         public string Password { get; set; }
 
-        [Required]
         public bool Gender { get; set; }
 
         [Required]
@@ -33,7 +32,6 @@ namespace api.Models
         [Column(TypeName = "nvarchar(255)")]
         public string Phone { get; set; }
 
-        [Required]
         public bool IsDeleted { get; set; } = false;
 
         //

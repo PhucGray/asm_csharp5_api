@@ -13,16 +13,12 @@ namespace api.Models
         [Column(TypeName = "nvarchar(255)")]
         public string FoodName { get; set; }
 
-        [Required]
         public double Price { get; set; }
 
-        [Required]
         public int Quantity { get; set; }
 
-        [Required]
         public double VAT { get; set; }
 
-        [Required]
         public double TotalPrice { get; set; }
 
         //

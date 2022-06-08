@@ -72,7 +72,6 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Image")
-                        .IsRequired()
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<bool>("IsDeleted")
@@ -211,13 +210,13 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.OrderDetailModel", b =>
                 {
                     b.HasOne("api.Models.FoodModel", "Food")
-                        .WithMany()
+                        .WithMany("OrderDetails")
                         .HasForeignKey("FoodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("api.Models.OrderModel", "Order")
-                        .WithMany()
+                        .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -241,6 +240,16 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.CustomerModel", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("api.Models.FoodModel", b =>
+                {
+                    b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("api.Models.OrderModel", b =>
+                {
+                    b.Navigation("OrderDetails");
                 });
 #pragma warning restore 612, 618
         }
