@@ -5,6 +5,7 @@ namespace api.Models
 {
     public enum Roles
     {
+        Customer = -1,
         Employee = 0,
         Admin = 1,
         SuperAdmin = 2,
@@ -41,6 +42,6 @@ namespace api.Models
         public bool IsDeleted { get; set; } = false;
 
         [Required]
-        public Roles Role { get; set; } = Roles.Employee;
+        public Roles Role { get; set; } = Roles.Customer;
     }
 }

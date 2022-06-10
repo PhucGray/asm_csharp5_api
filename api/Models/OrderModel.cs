@@ -32,9 +32,9 @@ namespace api.Models
         public OrderStatus OrderStatus { get; set; } = OrderStatus.Processing;
 
         //
-        [ForeignKey("CustomerModel")]
-        public int CustomerId { get; set; }
-        public CustomerModel Customer { get; set; }
+        [ForeignKey("UserModel")]
+        public int UserId { get; set; }
+        public UserModel User { get; set; }
 
         public ICollection<OrderDetailModel> OrderDetails { get; set; }
     }
