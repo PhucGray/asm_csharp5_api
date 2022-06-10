@@ -1,16 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using api.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
-    public enum Roles
-    {
-        Customer = -1,
-        Employee = 0,
-        Admin = 1,
-        SuperAdmin = 2,
-    }
-
     [Table("User")]
     public class UserModel
     {
@@ -39,9 +32,9 @@ namespace api.Models
         [Column(TypeName = "nvarchar(20)")]
         public string Phone { get; set; }
 
-        public bool IsDeleted { get; set; } = false;
-
         [Required]
-        public Roles Role { get; set; } = Roles.Customer;
+        public RolesEnum Role { get; set; } = RolesEnum.CUSTOMER;
+
+        public bool IsDeleted { get; set; } = false;
     }
 }

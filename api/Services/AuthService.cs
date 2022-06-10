@@ -30,34 +30,46 @@ namespace api.Services
 
         public async Task<dynamic> Login(LoginModel loginInfo)
         {
-            var user = await Authenticate(loginInfo);
-
-            if (user != null)
+            try
             {
-                string token = GenerateToken(user);
+                var user = await Authenticate(loginInfo);
 
-                var res = new
+                if (user != null)
                 {
-                    token,
-                    fullName = user.FullName,
-                    email = user.Email,
-                    gender = user.Gender,
-                    address = user.Address,
-                    phone = user.Phone,
-                    role = user.Role
-                };
+                    string token = GenerateToken(user);
+
+                    var res = new ProfileResModel
+                    {
+                        Token = token,
+                        FullName = user.FullName,
+                        Email = user.Email,
+                        Gender = user.Gender,
+                        Address = user.Address,
+                        Phone = user.Phone,
+                        Role = user.Role
+                    };
+
+                    return new
+                    {
+                        Success = true,
+                        Data = res
+                    };
+                }
 
                 return new
                 {
-                    Success = true,
-                    Data = res
+                    Success = false,
+                    Message = "Email hoặc mật khẩu không chính xác"
                 };
             }
-
-            return new
+            catch (Exception)
             {
-                Success = false
-            };
+                return new
+                {
+                    Success = false,
+                    Message = "Server error: login"
+                };
+            }
         }
 
         public async Task<dynamic> Register(UserModel userRegister)
@@ -74,21 +86,63 @@ namespace api.Services
                     Message = "Email đã được đăng ký"
                 };
 
-
                 await _context.Users.AddAsync(userRegister);
                 await _context.SaveChangesAsync();
 
-                return new { 
-                    Success = true,
-                    Data = userRegister
+                return new {
+                    Success = true
                 };
             }
-            catch (Exception) {}
-
-            return new {
-                Success = false,
-                Message = "Server Error"
+            catch (Exception)
+            {
+                return new
+                {
+                    Success = false,
+                    Message = "Server Error"
+                };
             };
+        }
+
+        public dynamic GetProfile(string token)
+        {
+            try
+            {
+                int id = int.Parse(DecodeToken(token));
+
+                var user = _context.Users.Find(id);
+
+                if (user != null)
+                {
+                    var res = new ProfileResModel
+                    {
+                        FullName = user.FullName,
+                        Email = user.Email,
+                        Gender = user.Gender,
+                        Address = user.Address,
+                        Phone = user.Phone,
+                        Role = user.Role
+                    };
+
+                    return new
+                    {
+                        Success = true,
+                        Data = res
+                    };
+                }
+
+                return new {
+                    Success = false,
+                    Message = "Get profile error"
+                };
+            }
+            catch (Exception)
+            {
+                return new
+                {
+                    Success = false,
+                    Message = "Server error: get profile"
+                };
+            }
         }
 
         private string GenerateToken(UserModel user)
@@ -99,6 +153,7 @@ namespace api.Services
 
             var claims = new[]
             {
+                new Claim("Id", user.Id.ToString()),
                 new Claim("FullName", user.FullName),
                 new Claim("Email", user.Email),
                 new Claim("Role", user.Role.ToString()),
@@ -113,6 +168,14 @@ namespace api.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        private dynamic DecodeToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtSecurityToken = handler.ReadJwtToken(token);
+            var id = jwtSecurityToken.Claims.First(claim => claim.Type == "Id").Value;
+
+            return id;
+        }
         private async Task<UserModel> Authenticate(LoginModel userLogin)
         {
             var currentEmployee = await _context.Users.Where(employee =>

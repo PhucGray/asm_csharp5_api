@@ -3,6 +3,7 @@ using api.Models;
 using api.Models.OtherModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace api.Controllers
@@ -30,6 +31,20 @@ namespace api.Controllers
         public async Task<dynamic> Register(UserModel userRegister)
         {
             return await _auth.Register(userRegister);
+        }
+
+        [HttpGet]
+        [Route("profile")]
+        public dynamic GetProfile([FromHeader] string authorization)
+        {
+            if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
+            {
+                var token = headerValue.Parameter;
+
+                return _auth.GetProfile(token);
+            }
+
+            return new { Success = false };
         }
     }
 }

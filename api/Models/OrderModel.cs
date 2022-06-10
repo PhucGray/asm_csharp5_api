@@ -5,13 +5,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
-    public enum OrderStatus
-    {
-        Processing = 1,
-        Delivering = 2,
-        Done = 3,
-    }
-
     [Table("Order")]
     public class OrderModel
     {
@@ -29,12 +22,14 @@ namespace api.Models
         [Column(TypeName = "nvarchar(255)")]
         public string Note { get; set; }
 
-        public OrderStatus OrderStatus { get; set; } = OrderStatus.Processing;
-
         //
         [ForeignKey("UserModel")]
         public int UserId { get; set; }
         public UserModel User { get; set; }
+
+        [ForeignKey("OrderStatusModel")]
+        public int OrderStatusId { get; set; }
+        public OrderStatusModel OrderStatus { get; set; }
 
         public ICollection<OrderDetailModel> OrderDetails { get; set; }
     }
