@@ -1,4 +1,5 @@
-﻿using api.Models;
+﻿using api.Enums;
+using api.Models;
 using Microsoft.AspNetCore.Http;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace api.Interfaces
     {
         Task<IEnumerable<UserModel>> GetAll();
         Task<UserModel> GetById(int id);
+        Task<IEnumerable<UserModel>> GetByRoles(RolesEnum[] roles);
         Task<UserModel> Add(UserModel user);
         Task<UserModel> Update(UserModel user, int id);
         Task<bool> Delete(int id);

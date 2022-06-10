@@ -1,4 +1,5 @@
-﻿using api.Helpers;
+﻿using api.Enums;
+using api.Helpers;
 using api.Interfaces;
 using api.Models;
 using Microsoft.AspNetCore.Hosting;
@@ -25,12 +26,17 @@ namespace api.Services
 
         public async Task<IEnumerable<UserModel>> GetAll()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Where(user => user.Role != 0).ToListAsync();
         }
 
         public async Task<UserModel> GetById(int id)
         {
             return await _context.Users.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<UserModel>> GetByRoles(RolesEnum[] roles)
+        {
+            return await _context.Users.Where(user => roles.Contains(user.Role)).ToListAsync();
         }
 
         public async Task<UserModel> Add(UserModel user)

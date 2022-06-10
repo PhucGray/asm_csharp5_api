@@ -41,6 +41,7 @@ namespace api.Services
                     var res = new ProfileResModel
                     {
                         Token = token,
+                        Id = user.Id,
                         FullName = user.FullName,
                         Email = user.Email,
                         Gender = user.Gender,
@@ -115,6 +116,7 @@ namespace api.Services
                 {
                     var res = new ProfileResModel
                     {
+                        Id = user.Id,
                         FullName = user.FullName,
                         Email = user.Email,
                         Gender = user.Gender,
@@ -178,10 +180,10 @@ namespace api.Services
         }
         private async Task<UserModel> Authenticate(LoginModel userLogin)
         {
-            var currentEmployee = await _context.Users.Where(employee =>
-             employee.Email == userLogin.Email && employee.Password == userLogin.Password).FirstOrDefaultAsync();
+            var user = await _context.Users.Where(user =>
+             user.Email == userLogin.Email && user.Password == userLogin.Password).FirstOrDefaultAsync();
 
-            if (currentEmployee != null) return currentEmployee;
+            if (user != null) return user;
 
             return null;
         }
