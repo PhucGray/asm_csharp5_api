@@ -9,9 +9,10 @@ namespace api.Interfaces
 {
     public interface IUser
     {
-        Task<IEnumerable<UserModel>> GetAll();
+        Task<IEnumerable<UserModel>> GetAllUsers();
+        Task<IEnumerable<UserModel>> GetAllCustomers();
         Task<UserModel> GetById(int id);
-        Task<IEnumerable<UserModel>> GetByRoles(RolesEnum[] roles);
+        Task<IEnumerable<RoleModel>> GetRoles();
         Task<UserModel> Add(UserModel user);
         Task<UserModel> Update(UserModel user, int id);
         Task<bool> Delete(int id);

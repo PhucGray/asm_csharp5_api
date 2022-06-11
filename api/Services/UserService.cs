@@ -24,9 +24,14 @@ namespace api.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<UserModel>> GetAll()
+        public async Task<IEnumerable<UserModel>> GetAllUsers()
         {
-            return await _context.Users.Where(user => user.Role != 0).ToListAsync();
+            return await _context.Users.Where(user => user.RoleId != 1).ToListAsync();
+        }
+
+        public async Task<IEnumerable<UserModel>> GetAllCustomers()
+        {
+            return await _context.Users.Where(user => user.RoleId == 1).ToListAsync();
         }
 
         public async Task<UserModel> GetById(int id)
@@ -34,10 +39,10 @@ namespace api.Services
             return await _context.Users.FindAsync(id);
         }
 
-        public async Task<IEnumerable<UserModel>> GetByRoles(RolesEnum[] roles)
+        public async Task<IEnumerable<RoleModel>> GetRoles()
         {
-            return await _context.Users.Where(user => roles.Contains(user.Role)).ToListAsync();
-        }
+            return await _context.Roles.Where(role => role.Id != 0).ToListAsync();
+        } 
 
         public async Task<UserModel> Add(UserModel user)
         {
@@ -68,7 +73,7 @@ namespace api.Services
                 user.Address = newUser.Address;
                 user.Phone = newUser.Phone;
                 user.Gender = newUser.Gender;
-                user.Role = newUser.Role;
+                user.RoleId = newUser.RoleId;
                 user.IsDeleted = newUser.IsDeleted;
 
                 await _context.SaveChangesAsync();

@@ -47,7 +47,7 @@ namespace api.Services
                         Gender = user.Gender,
                         Address = user.Address,
                         Phone = user.Phone,
-                        Role = user.Role
+                        RoleId = user.RoleId
                     };
 
                     return new
@@ -108,7 +108,7 @@ namespace api.Services
         {
             try
             {
-                int id = int.Parse(DecodeToken(token));
+                int id = int.Parse(AuthService.DecodeToken(token));
 
                 var user = _context.Users.Find(id);
 
@@ -122,7 +122,7 @@ namespace api.Services
                         Gender = user.Gender,
                         Address = user.Address,
                         Phone = user.Phone,
-                        Role = user.Role
+                        RoleId = user.RoleId
                     };
 
                     return new
@@ -158,7 +158,7 @@ namespace api.Services
                 new Claim("Id", user.Id.ToString()),
                 new Claim("FullName", user.FullName),
                 new Claim("Email", user.Email),
-                new Claim("Role", user.Role.ToString()),
+                new Claim("RoleId", user.RoleId.ToString()),
             };
 
             var token = new JwtSecurityToken(_configuation["Jwt:Issuer"],
@@ -170,7 +170,7 @@ namespace api.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private dynamic DecodeToken(string token)
+        private static dynamic DecodeToken(string token)
         {
             var handler = new JwtSecurityTokenHandler();
             var jwtSecurityToken = handler.ReadJwtToken(token);

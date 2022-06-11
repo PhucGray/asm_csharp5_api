@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace api
@@ -58,6 +59,7 @@ namespace api
             services.AddTransient<IFood, FoodService>();
             services.AddTransient<IUser, UserService>();
             services.AddTransient<IAuth, AuthService>();
+            services.AddTransient<IOrder, OrderService>();
 
             // ADD CORS
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
@@ -66,10 +68,6 @@ namespace api
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
-
-
-            services.AddDirectoryBrowser();
-            //
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

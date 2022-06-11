@@ -3,12 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
-    [Table("VATs")]
-    public class VATModel
+    [Table("Roles")]
+    public class RoleModel
     {
         [Key]
         public int Id { get; set; }
 
-        public double Value { get; set; } = 0;
+        [Required]
+        [Column(TypeName = "nvarchar(255)")]
+        public string Title { get; set; }
     }
 }

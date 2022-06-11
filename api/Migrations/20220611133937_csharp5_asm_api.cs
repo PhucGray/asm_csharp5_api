@@ -8,7 +8,7 @@ namespace api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Food",
+                name: "Foods",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -24,41 +24,33 @@ namespace api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Food", x => x.Id);
+                    table.PrimaryKey("PK_Foods", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderStatusModel",
+                name: "OrderStatuses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Title = table.Column<string>(type: "nvarchar(255)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderStatusModel", x => x.Id);
+                    table.PrimaryKey("PK_OrderStatuses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Roles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FullName = table.Column<string>(type: "nvarchar(255)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(255)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(255)", nullable: false),
-                    Gender = table.Column<bool>(type: "bit", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(255)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(20)", nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    Title = table.Column<string>(type: "nvarchar(255)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_Roles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -67,7 +59,7 @@ namespace api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    VAT = table.Column<double>(type: "float", nullable: false)
+                    Value = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,37 +67,64 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Order",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ToTalPrice = table.Column<double>(type: "float", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OrderAddress = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    Email = table.Column<string>(type: "varchar(255)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    Gender = table.Column<bool>(type: "bit", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    Phone = table.Column<string>(type: "varchar(20)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    VAT = table.Column<double>(type: "float", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(255)", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(255)", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     OrderStatusId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Order", x => x.Id);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Order_OrderStatusModel_OrderStatusId",
+                        name: "FK_Orders_OrderStatuses_OrderStatusId",
                         column: x => x.OrderStatusId,
-                        principalTable: "OrderStatusModel",
+                        principalTable: "OrderStatuses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Order_User_UserId",
+                        name: "FK_Orders_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderDetail",
+                name: "OrderDetails",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -113,68 +132,75 @@ namespace api.Migrations
                     FoodName = table.Column<string>(type: "nvarchar(255)", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    VAT = table.Column<double>(type: "float", nullable: false),
                     TotalPrice = table.Column<double>(type: "float", nullable: false),
                     FoodId = table.Column<int>(type: "int", nullable: false),
                     OrderId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderDetail", x => x.Id);
+                    table.PrimaryKey("PK_OrderDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderDetail_Food_FoodId",
+                        name: "FK_OrderDetails_Foods_FoodId",
                         column: x => x.FoodId,
-                        principalTable: "Food",
+                        principalTable: "Foods",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderDetail_Order_OrderId",
+                        name: "FK_OrderDetails_Orders_OrderId",
                         column: x => x.OrderId,
-                        principalTable: "Order",
+                        principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Order_OrderStatusId",
-                table: "Order",
-                column: "OrderStatusId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Order_UserId",
-                table: "Order",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderDetail_FoodId",
-                table: "OrderDetail",
+                name: "IX_OrderDetails_FoodId",
+                table: "OrderDetails",
                 column: "FoodId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderDetail_OrderId",
-                table: "OrderDetail",
+                name: "IX_OrderDetails_OrderId",
+                table: "OrderDetails",
                 column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_OrderStatusId",
+                table: "Orders",
+                column: "OrderStatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_UserId",
+                table: "Orders",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_RoleId",
+                table: "Users",
+                column: "RoleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "OrderDetail");
+                name: "OrderDetails");
 
             migrationBuilder.DropTable(
                 name: "VATs");
 
             migrationBuilder.DropTable(
-                name: "Food");
+                name: "Foods");
 
             migrationBuilder.DropTable(
-                name: "Order");
+                name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "OrderStatusModel");
+                name: "OrderStatuses");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
         }
     }
 }

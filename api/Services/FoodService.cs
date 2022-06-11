@@ -111,15 +111,20 @@ namespace api.Services
             try
             {
                 var food = _context.Foods.Find(id);
-                _context.Foods.Remove(food);
-                await _context.SaveChangesAsync();
+                if (food != null)
+                {
+                    _context.Foods.Remove(food);
+                    await _context.SaveChangesAsync();
+
+                    return ImageHelper.Delete(food.Image, _webHostEnvironment);
+                }
+
+                return false;
             }
             catch (Exception)
             {
                 return false;
             }
-
-            return true;
         }
     }
 }

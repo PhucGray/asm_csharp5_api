@@ -30,5 +30,18 @@ namespace api.Helpers
 
             return imageName;
         }
+
+        public static bool Delete(string imageName, IWebHostEnvironment webHostEnvironment)
+        {
+            string path = Path.Combine(webHostEnvironment.ContentRootPath, "Images", imageName);
+
+            if(File.Exists(path))
+            {
+                File.Delete(path);
+                return true;
+            }
+
+            return false;
+        }
     }
 }

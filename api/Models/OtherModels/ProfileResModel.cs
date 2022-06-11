@@ -11,6 +11,6 @@ namespace api.Models.OtherModels
         public bool Gender { get; set; }
         public string Address { get; set; }
         public string Phone { get; set; }
-        public RolesEnum Role { get;set; }
+        public int RoleId { get;set; }
     }
 }

@@ -23,9 +23,25 @@ namespace api.Controllers
         // GET api/users
         [HttpGet]
         [Route("")]
-        public async Task<IEnumerable<UserModel>> GetAll()
+        public async Task<IEnumerable<UserModel>> GetAllUsers()
         {
-            return await _user.GetAll();
+            return await _user.GetAllUsers();
+        }
+
+        // GET api/users/customers
+        [HttpGet]
+        [Route("customers")]
+        public async Task<IEnumerable<UserModel>> GetAllCustomers()
+        {
+            return await _user.GetAllCustomers();
+        }
+
+        // GET api/users/roles
+        [HttpGet]
+        [Route("roles")]
+        public async Task<IEnumerable<RoleModel>> GetRoles()
+        {
+            return await _user.GetRoles();
         }
 
         // GET api/users/3
@@ -33,14 +49,6 @@ namespace api.Controllers
         public async Task<UserModel> GetById(int id)
         {
             return await _user.GetById(id);
-        }
-
-        // GET api/users/getByRoles
-        [HttpGet]
-        [Route("getByRoles")]
-        public async Task<IEnumerable<UserModel>> GetByRoles([FromQuery] RolesEnum[] roles)
-        {
-            return await _user.GetByRoles(roles);
         }
 
         // POST api/users

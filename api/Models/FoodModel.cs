@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
-    [Table("Food")]
+    [Table("Foods")]
     public class FoodModel
     {
         [Key]
@@ -34,6 +34,6 @@ namespace api.Models
         public bool IsDeleted { get; set; } = false;
 
         //
-        public ICollection<OrderDetailModel> OrderDetails { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

@@ -10,7 +10,7 @@ using api.Models;
 namespace api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220610122319_csharp5_asm_api")]
+    [Migration("20220611133937_csharp5_asm_api")]
     partial class csharp5_asm_api
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,10 +56,10 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Food");
+                    b.ToTable("Foods");
                 });
 
-            modelBuilder.Entity("api.Models.OrderDetailModel", b =>
+            modelBuilder.Entity("api.Models.OrderDetail", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -85,16 +85,13 @@ namespace api.Migrations
                     b.Property<double>("TotalPrice")
                         .HasColumnType("float");
 
-                    b.Property<double>("VAT")
-                        .HasColumnType("float");
-
                     b.HasKey("Id");
 
                     b.HasIndex("FoodId");
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderDetail");
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("api.Models.OrderModel", b =>
@@ -104,24 +101,27 @@ namespace api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("OrderAddress")
+                    b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime>("OrderDate")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("OrderStatusId")
                         .HasColumnType("int");
 
-                    b.Property<double>("ToTalPrice")
+                    b.Property<double>("Price")
                         .HasColumnType("float");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
+
+                    b.Property<double>("VAT")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -129,7 +129,7 @@ namespace api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("api.Models.OrderStatusModel", b =>
@@ -139,16 +139,29 @@ namespace api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrderStatusModel");
+                    b.ToTable("OrderStatuses");
+                });
+
+            modelBuilder.Entity("api.Models.RoleModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("api.Models.UserModel", b =>
@@ -164,7 +177,7 @@ namespace api.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -182,14 +195,16 @@ namespace api.Migrations
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("varchar(20)");
 
-                    b.Property<int>("Role")
+                    b.Property<int>("RoleId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("api.Models.VATModel", b =>
@@ -199,7 +214,7 @@ namespace api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("VAT")
+                    b.Property<double>("Value")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -207,7 +222,7 @@ namespace api.Migrations
                     b.ToTable("VATs");
                 });
 
-            modelBuilder.Entity("api.Models.OrderDetailModel", b =>
+            modelBuilder.Entity("api.Models.OrderDetail", b =>
                 {
                     b.HasOne("api.Models.FoodModel", "Food")
                         .WithMany("OrderDetails")
@@ -243,6 +258,17 @@ namespace api.Migrations
                     b.Navigation("OrderStatus");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("api.Models.UserModel", b =>
+                {
+                    b.HasOne("api.Models.RoleModel", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("api.Models.FoodModel", b =>

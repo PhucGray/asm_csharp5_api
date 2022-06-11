@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
-    [Table("OrderDetail")]
-    public class OrderDetailModel
+    [Table("OrderDetails")]
+    public class OrderDetail
     {
         [Key]
         public int Id { get; set; }
@@ -17,8 +17,6 @@ namespace api.Models
 
         public int Quantity { get; set; }
 
-        public double VAT { get; set; }
-
         public double TotalPrice { get; set; }
 
         //
@@ -26,7 +24,7 @@ namespace api.Models
         public int FoodId { get; set; }
         public FoodModel Food { get; set; }
 
-        [ForeignKey("OrderModel")]
+        [ForeignKey("Orders")]
         public int OrderId { get; set; }
         public OrderModel Order { get; set; }
     }

@@ -5,32 +5,33 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
-    [Table("Order")]
+    [Table("Orders")]
     public class OrderModel
     {
         [Key]
         public int Id { get; set; }
 
-        public double ToTalPrice { get; set; }
+        public double Price { get; set; }
+        public double VAT { get; set; }
 
-        public DateTime OrderDate { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         [Required]
         [Column(TypeName = "nvarchar(255)")]
-        public string OrderAddress { get; set; }
+        public string Address { get; set; }
 
         [Column(TypeName = "nvarchar(255)")]
         public string Note { get; set; }
 
         //
-        [ForeignKey("UserModel")]
+        [ForeignKey("Users")]
         public int UserId { get; set; }
         public UserModel User { get; set; }
 
-        [ForeignKey("OrderStatusModel")]
-        public int OrderStatusId { get; set; }
+        [ForeignKey("OrderStatuses")]
+        public int OrderStatusId { get; set; } = 1;
         public OrderStatusModel OrderStatus { get; set; }
 
-        public ICollection<OrderDetailModel> OrderDetails { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

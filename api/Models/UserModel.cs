@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
-    [Table("User")]
+    [Table("Users")]
     public class UserModel
     {
         [Key]
@@ -15,7 +15,7 @@ namespace api.Models
         public string FullName { get; set; }
 
         [Required]
-        [Column(TypeName = "nvarchar(255)")]
+        [Column(TypeName = "varchar(255)")]
         public string Email { get; set; }
 
         [Required]
@@ -29,12 +29,14 @@ namespace api.Models
         public string Address { get; set; }
 
         [Required]
-        [Column(TypeName = "nvarchar(20)")]
+        [Column(TypeName = "varchar(20)")]
         public string Phone { get; set; }
 
-        [Required]
-        public RolesEnum Role { get; set; } = RolesEnum.CUSTOMER;
-
         public bool IsDeleted { get; set; } = false;
+
+        //
+        [ForeignKey("Roles")]
+        public int RoleId { get; set; }
+        public  RoleModel Role { get; set; }
     }
 }
