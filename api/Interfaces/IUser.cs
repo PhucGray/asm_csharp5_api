@@ -1,5 +1,6 @@
 ﻿using api.Enums;
 using api.Models;
+using api.Models.Request;
 using Microsoft.AspNetCore.Http;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,12 +10,12 @@ namespace api.Interfaces
 {
     public interface IUser
     {
-        Task<IEnumerable<UserModel>> GetAllUsers();
-        Task<IEnumerable<UserModel>> GetAllCustomers();
-        Task<UserModel> GetById(int id);
-        Task<IEnumerable<RoleModel>> GetRoles();
-        Task<UserModel> Add(UserModel user);
-        Task<UserModel> Update(UserModel user, int id);
-        Task<bool> Delete(int id);
+        Task<dynamic> GetAllUsers();
+        Task<dynamic> GetAllCustomers();
+        Task<dynamic> GetById(int id);
+        Task<dynamic> GetRoles();
+        Task<dynamic> Add(UserModel user);
+        Task<dynamic> Update(UpdateUserReqModel user, int id);
+        Task<dynamic> Delete(int id);
     }
 }

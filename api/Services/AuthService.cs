@@ -1,6 +1,7 @@
 ﻿using api.Interfaces;
 using api.Models;
 using api.Models.OtherModels;
+using api.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +39,7 @@ namespace api.Services
                 {
                     string token = GenerateToken(user);
 
-                    var res = new ProfileResModel
+                    var res = new LoginResModel
                     {
                         Token = token,
                         Id = user.Id,
@@ -114,7 +115,7 @@ namespace api.Services
 
                 if (user != null)
                 {
-                    var res = new ProfileResModel
+                    var res = new LoginResModel
                     {
                         Id = user.Id,
                         FullName = user.FullName,

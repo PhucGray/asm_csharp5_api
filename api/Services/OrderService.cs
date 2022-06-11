@@ -25,78 +25,163 @@ namespace api.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<OrderModel>> GetAll()
+        public async Task<dynamic> GetAll()
         {
-            return await _context.Orders
-                            .ToListAsync();
+            try
+            {
+                var orders = await _context.Orders.ToListAsync();
+                return new
+                {
+                    Success = true,
+                    Data = orders
+                };
+            }
+            catch (Exception)
+            {
+                return new
+                {
+                    Success = false,
+                    Message = "Order(GetAll): error"
+                };
+            }
         }
 
-        public async Task<OrderModel> GetById(int id)
+        public async Task<dynamic> GetById(int id)
         {
-            return await _context.Orders.FindAsync(id);
+            try
+            {
+                var order = await _context.Orders.FindAsync(id);
+                return new
+                {
+                    Success = true,
+                    Data = order
+                };
+            }
+            catch (Exception)
+            {
+                return new
+                {
+                    Success = false,
+                    Message = "Order(GetById): error"
+                };
+            }
         }
 
-        public async Task<IEnumerable<OrderDetail>> GetOrderDetailsByOrderId(int orderId)
-        {
-            return await _context.OrderDetails
+        public async Task<dynamic> GetOrderDetailsByOrderId(int orderId)
+        {  
+            try
+            {
+                var orderDetails = await _context.OrderDetails
                             .Where(i => i.OrderId == orderId)
                             .ToListAsync();
+                return new
+                {
+                    Success = true,
+                    Data = orderDetails
+                };
+            }
+            catch (Exception)
+            {
+                return new
+                {
+                    Success = false,
+                    Message = "Order(GetOrderDetailsByOrderId): error"
+                };
+            }
         }
 
-        public async Task<IEnumerable<OrderModel>> GetByUserId(int userId)
+        public async Task<dynamic> GetByUserId(int userId)
         {
             try
             {
                 var orders = await _context.Orders.Where(order => order.UserId == userId).ToListAsync();
 
-                return orders;
+                return new { 
+                    Success = true,
+                    Data = orders
+                };
             }
             catch (Exception)
             {
             }
 
-            return null;
+            return new
+            {
+                Success = false,
+                Message = "Order(GetByUserId): error"
+            };
         }
 
-        public async Task<IEnumerable<OrderStatusModel>> GetOrderStatuses()
+        public async Task<dynamic> GetOrderStatuses()
         {
-            return await _context.OrderStatuses.ToListAsync();
+            try
+            {
+                var orderStatuses = await _context.OrderStatuses.ToListAsync();
+                return new
+                {
+                    Success = true,
+                    Data = orderStatuses
+                };
+            }
+            catch (Exception)
+            {
+                return new
+                {
+                    Success = false,
+                    Message = "Order(GetOrderStatuses): error"
+                };
+            }
         }
 
-        public async Task<OrderModel> AddOrder(OrderModel order)
+        public async Task<dynamic> AddOrder(OrderModel order)
         {
             try
             {
                 await _context.Orders.AddAsync(order);
                 _context.SaveChanges();
 
-                return order;
+                return new {
+                    Success = true,
+                    Data = order
+                };
             }
             catch (Exception)
             {
 
             }
 
-            return null;
+            return new
+            {
+                Success = false,
+                Message = "Order(AddOrder): error"
+            };
         }
 
-        public async Task<IEnumerable<OrderDetail>> AddOrderDetails(IEnumerable<OrderDetail> orderDetails)
+        public async Task<dynamic> AddOrderDetails(IEnumerable<OrderDetail> orderDetails)
         {
             try
             {
                 await _context.OrderDetails.AddRangeAsync(orderDetails);
                 _context.SaveChanges();
-                return orderDetails;
+                return new
+                {
+                    Success = true,
+                    Data = orderDetails
+                };
             }
             catch (Exception)
             {
 
             }
 
-            return null;
+            return new
+            {
+                Success = false,
+                Message = "Order(AddOrderDetails): error"
+            };
         }
 
-        public async Task<OrderModel> Update(int statusId, int id)
+        public async Task<dynamic> Update(int statusId, int id)
         {
             try
             {
@@ -106,26 +191,42 @@ namespace api.Services
                
                 await _context.SaveChangesAsync();
 
-                return order;
+                return new {
+                    Success = true,
+                    Data = order
+                };
             }
             catch (Exception)
             {
             }
 
-            return null;
+            return new
+            {
+                Success = false,
+                Message = "Order(Update): error"
+            };
         }
 
-        public async Task<double> GetVAT()
+        public async Task<dynamic> GetVAT()
         {
             try
             {
                 var VAT = await _context.VATs.FindAsync(1);
-                return VAT.Value;
+
+                return new { 
+                    Success = true,
+                    Data = VAT.Value
+                };
             }
             catch (Exception)
             {
-                return 0;
             }
+
+            return new
+            {
+                Success = false,
+                Message = "Order(VAT): error"
+            };
         }
     }
 }

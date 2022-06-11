@@ -25,17 +25,57 @@ namespace api.Services
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task<IEnumerable<FoodModel>> GetAll() 
-        { 
-            return await _context.Foods.ToListAsync(); 
-        }
-
-        public async Task<FoodModel> GetById(int id)
+        public async Task<dynamic> GetAll() 
         {
-            return await _context.Foods.FindAsync(id);
+            try
+            {
+                var foods = await _context.Foods.ToListAsync();
+
+                return new
+                {
+                    Success = true,
+                    Data = foods
+                };
+            }
+            catch (Exception)
+            {
+                return new { 
+                    Success = false,
+                    Message = "Food(GetAll): error"
+                };
+            }
         }
 
-        public async Task<FoodModel> Add(IFormCollection data)
+        public async Task<dynamic> GetById(int id)
+        {
+            try
+            {
+                var food = await _context.Foods.FindAsync(id);
+
+                if(food != null)
+                {
+                    return new
+                    {
+                        Success = true,
+                        Data = food
+                    };
+                }
+
+                return new { 
+                    Success = false
+                };
+            }
+            catch (Exception)
+            {
+                return new
+                {
+                    Success = false,
+                    Message = "Food(GetById): error"
+                };
+            }
+        }
+
+        public async Task<dynamic> Add(IFormCollection data)
         {
             try
             {
@@ -53,18 +93,25 @@ namespace api.Services
                     await _context.Foods.AddAsync(food);
                     await _context.SaveChangesAsync();
 
-                    return food;
+                    return new { 
+                        Success = true,
+                        Data = food
+                    };
                 }
             }
             catch (Exception)
             {
-
+                
             }
 
-            return null;
+            return new
+            {
+                Success = false,
+                Message = "Food(Add): error"
+            };
         }
 
-        public async Task<FoodModel> Update(IFormCollection data, int id)
+        public async Task<dynamic> Update(IFormCollection data, int id)
         {
             try
             {
@@ -95,7 +142,10 @@ namespace api.Services
 
                     await _context.SaveChangesAsync();
 
-                    return food;
+                    return new { 
+                        Success = true,
+                        Data = food
+                    };
                 }
             }
             catch (Exception)
@@ -103,10 +153,13 @@ namespace api.Services
 
             }
 
-            return null;
+            return new {
+                Success = false,
+                Message = "Food(Update): error"
+            };
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<dynamic> Delete(int id)
         {
             try
             {
@@ -116,14 +169,24 @@ namespace api.Services
                     _context.Foods.Remove(food);
                     await _context.SaveChangesAsync();
 
-                    return ImageHelper.Delete(food.Image, _webHostEnvironment);
+                    ImageHelper.Delete(food.Image, _webHostEnvironment);
+
+                    return new {
+                        Success = true
+                    };
                 }
 
-                return false;
+                return new {
+                    Success = false,
+                    Message = "Food(Delete): error"
+                };
             }
             catch (Exception)
             {
-                return false;
+                return new {
+                    Success = false,
+                    Message = "Food(Delete): error"
+                };
             }
         }
     }
