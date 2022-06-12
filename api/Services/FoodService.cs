@@ -84,18 +84,25 @@ namespace api.Services
 
                 if (data.TryGetValue("foodData", out var someData))
                 {
-                    var food = JsonSerializer.Deserialize<FoodModel>(someData);
+                    var newFood = JsonSerializer.Deserialize<FoodModel>(someData);
+
+                    var dbFoodName = await _context.Foods.Where(food => food.Name == newFood.Name).ToListAsync();
+
+                    if (dbFoodName.Count > 0) return new { 
+                        Success = false,
+                        Message = "Tên món ăn đã tồn tại"
+                    };
 
                     string imagePath = await ImageHelper.Upload(files[0], _webHostEnvironment);
 
-                    food.Image = imagePath;
+                    newFood.Image = imagePath;
 
-                    await _context.Foods.AddAsync(food);
+                    await _context.Foods.AddAsync(newFood);
                     await _context.SaveChangesAsync();
 
                     return new { 
                         Success = true,
-                        Data = food
+                        Data = newFood
                     };
                 }
             }
@@ -126,6 +133,13 @@ namespace api.Services
                     var newFood = JsonSerializer.Deserialize<FoodModel>(someData);
                     var food = _context.Foods.Find(id);
 
+                    var dbFoodName = await _context.Foods.Where(food => food.Name == newFood.Name).ToListAsync();
+
+                    if (dbFoodName.Count > 0 && newFood.Name != food.Name) return new
+                    {
+                        Success = false,
+                        Message = "Tên món ăn đã tồn tại"
+                    };
                     
                     food.Name = newFood.Name;
                     food.Price = newFood.Price;
