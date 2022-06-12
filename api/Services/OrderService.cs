@@ -29,7 +29,7 @@ namespace api.Services
         {
             try
             {
-                var orders = await _context.Orders.ToListAsync();
+                var orders = await _context.Orders.Include(order => order.User).ToListAsync();
                 return new
                 {
                     Success = true,
