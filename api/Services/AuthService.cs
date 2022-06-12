@@ -2,6 +2,7 @@
 using api.Interfaces;
 using api.Models;
 using api.Models.OtherModels;
+using api.Models.Request;
 using api.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -151,6 +152,52 @@ namespace api.Services
             }
         }
 
+        public async Task<dynamic> UpdatePassword(string token, UpdatePasswordReqModel updatePasswordReq)
+        {
+            try
+            {
+                int id = int.Parse(AuthService.DecodeToken(token));
+
+                var user = await _context.Users.FindAsync(id);
+
+                if (user != null)
+                {
+                    if(Password.Compare(updatePasswordReq.OldPassword, user.Password))
+                    {
+                        user.Password = Password.Hash(updatePasswordReq.NewPassword);
+
+                        await _context.SaveChangesAsync();
+
+                        return new { 
+                            Success = true
+                        };
+                    } else
+                    {
+                        return new { 
+                            Success = false,
+                            Message = "Mật khẩu không chính xác"
+                        };
+                    }
+                   
+                }
+
+                return new
+                {
+                    Success = false,
+                    Message = "Update password error"
+                };
+            }
+            catch (Exception)
+            {
+                return new
+                {
+                    Success = false,
+                    Message = "Server error: get profile"
+                };
+            }
+        }
+
+        //
         private string GenerateToken(UserModel user)
         {
 
