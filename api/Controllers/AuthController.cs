@@ -35,13 +35,13 @@ namespace api.Controllers
 
         [HttpGet]
         [Route("profile")]
-        public dynamic GetProfile([FromHeader] string authorization)
+        public async Task<dynamic> GetProfile([FromHeader] string authorization)
         {
             if (AuthenticationHeaderValue.TryParse(authorization, out var headerValue))
             {
                 var token = headerValue.Parameter;
 
-                return _auth.GetProfile(token);
+                return await _auth.GetProfile(token);
             }
 
             return new { Success = false };

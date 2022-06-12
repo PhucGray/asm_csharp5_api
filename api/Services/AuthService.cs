@@ -1,4 +1,5 @@
-﻿using api.Interfaces;
+﻿using api.Helpers;
+using api.Interfaces;
 using api.Models;
 using api.Models.OtherModels;
 using api.Models.Response;
@@ -88,6 +89,8 @@ namespace api.Services
                     Message = "Email đã được đăng ký"
                 };
 
+                userRegister.Password = Password.Hash(userRegister.Password);
+
                 await _context.Users.AddAsync(userRegister);
                 await _context.SaveChangesAsync();
 
@@ -105,13 +108,13 @@ namespace api.Services
             };
         }
 
-        public dynamic GetProfile(string token)
+        public async Task<dynamic> GetProfile(string token)
         {
             try
             {
                 int id = int.Parse(AuthService.DecodeToken(token));
 
-                var user = _context.Users.Find(id);
+                var user = await _context.Users.FindAsync(id);
 
                 if (user != null)
                 {
@@ -182,9 +185,9 @@ namespace api.Services
         private async Task<UserModel> Authenticate(LoginModel userLogin)
         {
             var user = await _context.Users.Where(user =>
-             user.Email == userLogin.Email && user.Password == userLogin.Password).FirstOrDefaultAsync();
+             user.Email == userLogin.Email).FirstOrDefaultAsync();
 
-            if (user != null) return user;
+            if (user != null && Password.Compare(userLogin.Password, user.Password)) return user;
 
             return null;
         }

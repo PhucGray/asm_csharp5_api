@@ -8,6 +8,6 @@ namespace api.Interfaces
     {
         Task<dynamic> Login(LoginModel loginInfo);
         Task<dynamic> Register(UserModel customerRegister);
-        dynamic GetProfile(string token);
+        Task<dynamic> GetProfile(string token);
     }
 }
